@@ -51,7 +51,7 @@ class Peer:
             message_data = json.loads(data)
             from_username = message_data.get("from")
             message = message_data.get("message")
-            print(f"Nuevo mensaje de {from_username}: {message}")
+            print(f"\\nNuevo mensaje de {from_username}: {message}\\n")
             if from_username not in self.contacts:
                 self.contacts[from_username] = client_socket.getpeername()
             # Save the client socket for persistent connection
@@ -88,11 +88,9 @@ class Peer:
             print(f"{username}: {ip}:{port}")
 
 if __name__ == "__main__":
-    username = input("Introduce tu nombre de usuario: ")
-    port = int(input("Introduce puerto: "))
+    username = "u1"
+    port = 3000
     p = Peer(username, port=port)
     server_thread = threading.Thread(target=p.start_server)
     server_thread.start()
     p.user_interface()
-    
-

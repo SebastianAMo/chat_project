@@ -88,11 +88,9 @@ class Peer:
             print(f"{username}: {ip}:{port}")
 
 if __name__ == "__main__":
-    username = input("Introduce tu nombre de usuario: ")
-    port = int(input("Introduce puerto: "))
+    username = "u2"
+    port = 2000
     p = Peer(username, port=port)
     server_thread = threading.Thread(target=p.start_server)
     server_thread.start()
     p.user_interface()
-    
-
