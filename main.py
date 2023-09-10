@@ -78,12 +78,17 @@ class Peer:
             self.connected_sockets[from_username] = client_socket
 
     def connect_to_peer(self, host, port):
-        if host not in self.connected_sockets:
-            client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            client_socket.connect((host, port))
-            self.send_initial_message(client_socket)
-            threading.Thread(target=self.handle_client, args=(client_socket,)).start()
-            print(f"Conectado con {host}:{port}")
+        try:
+            if host not in self.connected_sockets:
+                client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                client_socket.connect((host, port))
+                self.send_initial_message(client_socket)
+                threading.Thread(target=self.handle_client, args=(client_socket,)).start()
+                print(f"Conectado con {host}:{port}")
+        except ConnectionRefusedError:
+            print("Error: No se puede establecer la conexión. Asegúrate de que el Peer esté escuchando en el puerto especificado.")
+        except Exception as e:
+            print(f"Error al intentar conectarse: {e}")
 
     def send_initial_message(self, client_socket):
         message_data = {
