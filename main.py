@@ -33,7 +33,6 @@ class Peer:
             elif choice == "4":
                 self.view_messages()
             elif choice == "5":
-                # Close all sockets before exiting
                 for sock in self.connected_sockets.values():
                     sock.close()
                 self.server_socket.close()
