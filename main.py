@@ -54,6 +54,10 @@ class Peer:
             print(f"Nuevo mensaje de {from_username}: {message}")
             if from_username not in self.contacts:
                 self.contacts[from_username] = client_socket.getpeername()
+                port = message_data.get("port")
+                host = message_data.get("host")
+                self.connect_to_peer(host,int(port))
+                
             # Save the client socket for persistent connection
             self.connected_sockets[from_username] = client_socket
 
@@ -69,7 +73,9 @@ class Peer:
     def send_initial_message(self, client_socket):
         message_data = {
             "from": self.username,
-            "message": f"Conectado con {self.username}"
+            "message": f"Conectado con {self.username}",
+            "port": f"{self.port}",
+            "host": f"{self.host}"
         }
         client_socket.send(json.dumps(message_data).encode())
 
