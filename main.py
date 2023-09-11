@@ -11,6 +11,7 @@ class Peer:
         self.connected_sockets = {}  # {username: socket}
         self.messages ={} # {username: [{"from": sender, "message": message}, ...]}
         self.server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.running = True  # control variable for the server loop
 
     def user_interface(self):
         while True:
@@ -33,6 +34,7 @@ class Peer:
             elif choice == "4":
                 self.view_messages()
             elif choice == "5":
+                self.running = False  # stop the server loop
                 for sock in self.connected_sockets.values():
                     sock.close()
                 self.server_socket.close()
@@ -51,9 +53,12 @@ class Peer:
         self.server_socket.bind((self.host, self.port))
         self.server_socket.listen(5)
         print(f"Escuchando en {self.host}:{self.port}")
-        while True:
-            client_socket, client_address = self.server_socket.accept()
-            threading.Thread(target=self.handle_client, args=(client_socket,)).start()
+        while self.running:
+            try:
+                client_socket, _ = self.server_socket.accept()
+                threading.Thread(target=self.handle_client, args=(client_socket,)).start()
+            except OSError:
+                pass
 
     def handle_client(self, client_socket):
         while True:
@@ -78,17 +83,12 @@ class Peer:
             self.connected_sockets[from_username] = client_socket
 
     def connect_to_peer(self, host, port):
-        try:
-            if host not in self.connected_sockets:
-                client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-                client_socket.connect((host, port))
-                self.send_initial_message(client_socket)
-                threading.Thread(target=self.handle_client, args=(client_socket,)).start()
-                print(f"Conectado con {host}:{port}")
-        except ConnectionRefusedError:
-            print("Error: No se puede establecer la conexión. Asegúrate de que el Peer esté escuchando en el puerto especificado.")
-        except Exception as e:
-            print(f"Error al intentar conectarse: {e}")
+        if host not in self.connected_sockets:
+            client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            client_socket.connect((host, port))
+            self.send_initial_message(client_socket)
+            threading.Thread(target=self.handle_client, args=(client_socket,)).start()
+            print(f"Conectado con {host}:{port}")
 
     def send_initial_message(self, client_socket):
         message_data = {
