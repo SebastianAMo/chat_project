@@ -136,7 +136,7 @@ class Interface(Peer):
             choice = input("Elige una opción: ")
             try:
                 if choice == "1":
-                    host = '127.0.0.1'
+                    host = input("Introduce la ip del Peer: ")
                     port = int(input("Introduce el puerto del Peer: "))
                     self.connect_to_peer(host, port)
                 elif choice == "2":
@@ -161,7 +161,8 @@ class Interface(Peer):
 if __name__ == "__main__":
     username = input("Introduce tu nombre de usuario: ")
     port = int(input("Introduce puerto: "))
-    peer = Interface(username, port=port)
+    ip = input("Introduce ip: ")
+    peer = Interface(username, port=port, host=ip)
     threading.Thread(target=peer.start_server).start()
     peer.user_interface()
     
