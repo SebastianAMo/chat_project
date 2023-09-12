@@ -25,3 +25,13 @@ Un sistema de chat en tiempo real que utiliza una arquitectura Peer-to-Peer (P2P
     - Salir
 
 3. ¡Eso es todo! Puedes comenzar a conectarte con otros pares y chatear.
+
+## Descripción
+
+### Main
+
+Este archivo para tener varios chat de forma local la dirección IP siempre sera 127.0.0.1, en el caso de los puertos tienen que ser diferentes.
+
+### Main_ip
+
+Este archivo para conexiones remotas en el puerto que trabajara por defecto sera 12345, pero para el ip se tendra que ingresar la del computador al cual se quiere establecer conexión que es la que aparece en la consola con el mensaje de "Escuchando en ...".
