@@ -171,9 +171,8 @@ class ChatApp(QWidget):
         self.init_ui()
 
         # Chat Peer
-        username = input("Introduce tu nombre de usuario: ")  
-        port = int(input("Introduce puerto: ")) 
-        self.peer = Interface(username, port=port)
+        username = input("Introduce tu nombre de usuario: ")   
+        self.peer = Interface(username,host=socket.gethostname())
         self.setWindowTitle(username)
         threading.Thread(target=self.peer.start_server).start()
 
