@@ -258,11 +258,3 @@ if __name__ == '__main__':
     ex = ChatApp()
     ex.show()
     sys.exit(app.exec_())
-
-# if __name__ == "__main__":
-#     username = input("Introduce tu nombre de usuario: ")
-#     port = int(input("Introduce puerto: "))
-#     peer = Interface(username, port=port)
-#     threading.Thread(target=peer.start_server).start()
-#     peer.user_interface()
-    
