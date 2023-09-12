@@ -34,6 +34,7 @@ class Peer:
             self.server_socket.bind((self.host, self.port))
             self.server_socket.listen(5)
             print(f"Escuchando en {self.host}:{self.port}")
+
             while self.running:
                 client_socket, _ = self.server_socket.accept()
                 threading.Thread(target=self.handle_client, args=(client_socket,)).start()
@@ -172,7 +173,7 @@ class ChatApp(QWidget):
 
         # Chat Peer
         username = input("Introduce tu nombre de usuario: ")   
-        self.peer = Interface(username,host=socket.gethostname())
+        self.peer = Interface(username,host=str(socket.gethostbyname(socket.gethostname())))
         self.setWindowTitle(username)
         threading.Thread(target=self.peer.start_server).start()
 
