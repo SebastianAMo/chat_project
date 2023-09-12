@@ -1,6 +1,10 @@
+import sys
 import socket
 import json
+import os
 import threading
+from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QPushButton, QTextEdit, QComboBox, QLabel, QLineEdit
+
 
 class Peer:
     def __init__(self, username, host='127.0.0.1', port=12345):
@@ -21,6 +25,7 @@ class Peer:
             for msg in self.messages[peer_name]:
                 print(f"{msg['from']}: {msg['message']}")
             print("-----------------------------------\n")
+            os.system("cls")
         else:
             print("No hay mensajes con ese Peer.")
 
@@ -158,10 +163,106 @@ class Interface(Peer):
             except Exception as e:
                 print(f"Error: {e}")
 
-if __name__ == "__main__":
-    username = input("Introduce tu nombre de usuario: ")
-    port = int(input("Introduce puerto: "))
-    peer = Interface(username, port=port)
-    threading.Thread(target=peer.start_server).start()
-    peer.user_interface()
+class ChatApp(QWidget):
+    def __init__(self):
+        super().__init__()
+
+        # UI components
+        self.init_ui()
+
+        # Chat Peer
+        username = input("Introduce tu nombre de usuario: ")  
+        port = int(input("Introduce puerto: ")) 
+        self.peer = Interface(username, port=port)
+        self.setWindowTitle(username)
+        threading.Thread(target=self.peer.start_server).start()
+
+    def init_ui(self):
+        self.layout = QVBoxLayout()
+
+        # Sección para conectar con un Peer
+        self.host_input = QLineEdit(self)
+        self.host_input.setPlaceholderText('127.0.0.1')
+        self.layout.addWidget(self.host_input)
+
+        self.port_input = QLineEdit(self)
+        self.port_input.setPlaceholderText('12345')
+        self.layout.addWidget(self.port_input)
+
+        self.connect_button = QPushButton('Conectar con Peer')
+        self.connect_button.clicked.connect(self.connect_to_peer)
+        self.layout.addWidget(self.connect_button)
+
+        # Dropdown para seleccionar un Peer
+        self.peer_dropdown = QComboBox()
+        self.layout.addWidget(self.peer_dropdown)
+
+        # Input para mensajes
+        self.msg_input = QTextEdit()
+        self.layout.addWidget(self.msg_input)
+
+        # Botón para enviar mensajes
+        self.send_button = QPushButton('Enviar mensaje')
+        self.send_button.clicked.connect(self.send_msg)
+        self.layout.addWidget(self.send_button)
+
+        # Botón para mostrar contactos
+        self.show_contacts_button = QPushButton('Mostrar contactos')
+        self.show_contacts_button.clicked.connect(self.show_contacts)
+        self.layout.addWidget(self.show_contacts_button)
+
+        # Botón para ver mensajes
+        self.view_messages_button = QPushButton('Ver mensajes')
+        self.view_messages_button.clicked.connect(self.view_messages)
+        self.layout.addWidget(self.view_messages_button)
+
+        # Botón para limpiar el cuadro de texto
+        self.clear_button = QPushButton('Limpiar pantalla')
+        self.clear_button.clicked.connect(self.clear_screen)
+        self.layout.addWidget(self.clear_button)
+        
+        self.setLayout(self.layout)
+
+    def send_msg(self):
+        peer_name = self.peer_dropdown.currentText()
+        message = self.msg_input.toPlainText()
+        self.peer.send_message(peer_name, message)
+        # Limpiar el cuadro de texto después de enviar
+        self.msg_input.clear()
+
+    def connect_to_peer(self):
+        host = self.host_input.text()
+        port = int(self.port_input.text())
+        self.peer.connect_to_peer(host, port)
+
+    def show_contacts(self):
+        # Limpiar el dropdown
+        self.peer_dropdown.clear()
+
+        # Añadir los contactos al dropdown
+        for username in self.peer.contacts.keys():
+            self.peer_dropdown.addItem(username)
+
+    def view_messages(self):
+        peer_name = self.peer_dropdown.currentText()
+        if peer_name in self.peer.messages:
+            messages = "\n".join([f"{msg['from']}: {msg['message']}" for msg in self.peer.messages[peer_name]])
+            self.msg_input.setText(messages)
+
+    def clear_screen(self):
+        """Función para limpiar el cuadro de texto."""
+        self.msg_input.clear()
+
+if __name__ == '__main__':
+    app = QApplication(sys.argv)
+    ex = ChatApp()
+    ex.show()
+    sys.exit(app.exec_())
+
+# if __name__ == "__main__":
+#     username = input("Introduce tu nombre de usuario: ")
+#     port = int(input("Introduce puerto: "))
+#     peer = Interface(username, port=port)
+#     threading.Thread(target=peer.start_server).start()
+#     peer.user_interface()
     
