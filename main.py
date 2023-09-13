@@ -5,6 +5,7 @@ import os
 import threading
 from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QPushButton, QTextEdit, QComboBox, QLabel, QLineEdit
 
+# Hola
 
 class Peer:
     def __init__(self, username, host='127.0.0.1', port=12345):
@@ -15,7 +16,7 @@ class Peer:
         self.connected_sockets = {}  # {username: socket}
         self.messages ={} # {username: [{"from": sender, "message": message}, ...]}
         self.server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.running = True  # control variable for the server loop
+        self.running = True  # control variable for the server loop        
 
     def view_messages(self):
         peer_name = input("Introduce el nombre del Peer cuyos mensajes quieres ver: ")
