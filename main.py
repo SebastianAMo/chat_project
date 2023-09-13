@@ -5,7 +5,6 @@ import os
 import threading
 from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QPushButton, QTextEdit, QComboBox, QLabel, QLineEdit
 
-# Hola
 
 class Peer:
     def __init__(self, username, host='127.0.0.1', port=12345):
